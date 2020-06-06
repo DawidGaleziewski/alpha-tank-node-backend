@@ -1,4 +1,6 @@
 const moongose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new moongose.Schema({
   email: {
@@ -33,6 +35,43 @@ const userSchema = new moongose.Schema({
       },
     },
   ],
+});
+
+// Plugins
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("Unable to authenticate");
+  }
+
+  const isMath = await bcrypt.compare(password, user.password);
+  if (!isMath) {
+    throw new Error("Unable to authenticate");
+  }
+
+  return user;
+};
+
+userSchema.methods.generateToken = async function () {
+  const user = this;
+  const secret = "you_are_breathtaking";
+
+  const token = jwt.sign({ _id: user._id.toString() }, secret);
+
+  user.tokens = user.tokens.concat({ token });
+  console.log(user.tokens);
+  await user.save();
+  return token;
+};
+
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+
+  next();
 });
 
 const User = moongose.model("User", userSchema);
