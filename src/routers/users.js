@@ -2,6 +2,8 @@ const express = require("express");
 const router = new express.Router();
 const User = require("../models/user");
 
+const auth = require("../middleware/auth");
+
 // Login user
 router.post("/users/login", async (req, res) => {
   try {
@@ -18,6 +20,22 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
+// Logout user
+// started on loging out users
+router.post("/users/logout", auth, async (req, res) => {
+  try {
+    const filteredTokens = req.user.tokens.filter((oldToken) => {
+      console.log("old", oldToken.token, "origin", req.token);
+      return oldToken !== req.token;
+    });
+    console.log(filteredTokens, req.token);
+    req.user.tokens = filteredTokens;
+    await req.user.save();
+
+    res.status(200).send(req.user);
+  } catch (error) {}
+});
+
 // Create user
 router.post("/users", async (req, res) => {
   const user = await new User(req.body);
@@ -31,17 +49,8 @@ router.post("/users", async (req, res) => {
 });
 
 // Read user
-router.get("/users/:id", async (req, res) => {
-  const _id = req.params.id;
-  try {
-    const user = await User.findOne({ _id });
-    if (!user) {
-      return res.status(400).send({ error: "Data not found" });
-    }
-    res.status(200).send(user);
-  } catch (error) {
-    res.status(500).send(error);
-  }
+router.get("/users/me", auth, async (req, res) => {
+  res.status(200).send(req.user);
 });
 
 // Update user
@@ -59,7 +68,6 @@ router.patch("/users/:id", async (req, res) => {
 
   try {
     const user = await User.findOne({ _id });
-    console.log(user);
     updateKeys.forEach((updateKay) => {
       user[updateKay] = req.body[updateKay];
     });

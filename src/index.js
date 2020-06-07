@@ -5,7 +5,6 @@ const validator = require("validator");
 require("./db/mongoose");
 
 const app = express();
-const router = new express.Router();
 
 // constant values
 const port = process.env.PORT || 3000;
