@@ -24,10 +24,8 @@ router.post("/users/login", async (req, res) => {
 router.post("/users/logout", auth, async (req, res) => {
   try {
     const filteredTokens = req.user.tokens.filter((oldToken) => {
-      console.log("old", oldToken.token, "origin", req.token);
       return oldToken.token !== req.token;
     });
-    console.log(filteredTokens, req.token);
     req.user.tokens = filteredTokens;
     await req.user.save();
 

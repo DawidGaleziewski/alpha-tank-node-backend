@@ -6,11 +6,8 @@ const auth = require("../middleware/auth");
 
 // Create new tank
 router.post("/tanks", auth, async (req, res) => {
-  console.log(req.body);
   try {
     const tank = new Tank({ ...req.body, owner: req.user._id });
-    // console.log({ ...req.body, owner: req.user._id });
-    console.log(tank);
     await tank.save();
     res.status(200).send(tank);
   } catch (error) {
@@ -88,6 +85,24 @@ router.patch("/tanks/:id", auth, async (req, res) => {
     res.status(200).send(tank);
   } catch (error) {
     res.status(500).send({ error: "Unable to update data" });
+  }
+});
+
+// Delete tank
+router.delete("/tanks/:id", auth, async (req, res) => {
+  try {
+    const tank = await Tank.findOne({
+      owner: req.user._id,
+      _id: req.params.id,
+    });
+    if (!tank) {
+      return res.status(400).send({ error: "No tank found" });
+    }
+
+    await tank.remove();
+    res.status(200).send(tank);
+  } catch (error) {
+    res.status(500).send({ error: "unable to delete tank" });
   }
 });
 

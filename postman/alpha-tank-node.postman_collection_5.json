@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "9e542835-ad1d-46b8-9ed3-db8629edc7cc",
+		"name": "alpha-tank-node",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users APIs",
+			"item": [
+				{
+					"name": "CREATE USER",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3c58db3f-aca3-4ba7-a192-16b356285245",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c7f0622-ad09-4ba1-98df-816a4eab1912",
+								"exec": [
+									"if(pm.response.code === 201){\r",
+									"    pm.environment.set('authToken', pm.response.json().token)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\" : \"test@test3@com\",\n\t\"password\" : \"admin123\",\n\t\"name\" : \"Travor\",\n\t\"surname\": \"Gravis\",\n\t\"age\": 45\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READ USER",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE USER",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Travis\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/5edbc81165cc921dd0b7da2b",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"5edbc81165cc921dd0b7da2b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE USER",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/5edbc81165cc921dd0b7da2b",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"5edbc81165cc921dd0b7da2b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cb3c51f7-0526-45a8-8b5a-7cb10cf07d56",
+								"exec": [
+									"if(pm.response.code === 201){\r",
+									"    pm.environment.set('authToken', pm.response.json().token)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\" : \"test@test3@com\",\n\t\"password\" : \"admin123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout all user sessions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/logout/all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"logout",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "tanks APIs",
+			"item": [
+				{
+					"name": "CREATE TANK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\" : \"Awesome tank\",\n  \"sizeX\": 100,\n  \"sizeY\": 100,\n  \"sizeZ\": 100,\n  \"aquariumType\": \"marine\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/tanks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tanks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READ ONE TANK",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tanks/5ede466940a0ec3aa41f896d",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tanks",
+								"5ede466940a0ec3aa41f896d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READ all user tanks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tanks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tanks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE TANK",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Changed name of my tank\",\n\t\"aquariumType\": \"lake water 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/tanks/5ede466940a0ec3aa41f896d",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tanks",
+								"5ede466940a0ec3aa41f896d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE TANK",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tanks/5ede3565f0cba62bf0a00157",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tanks",
+								"5ede3565f0cba62bf0a00157"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "tests APIs",
+			"item": [
+				{
+					"name": "CREATE TEST",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"tankID\": \"5ede466940a0ec3aa41f896d\",\n\t\"dateOfTest\": \"Mon Jun 08 2020 21:31:49 GMT+0200\",\n\t\"ph\": 7,\n\t\"nh4\": 0.5,\n\t\"nh3\": 0,\n\t\"no3\": 8,\n\t\"tempCelc\": 18 \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/tests",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READ TEST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tests/5ede9237a131ec210c96ee17",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests",
+								"5ede9237a131ec210c96ee17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READ all tests for auth user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tests",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "0ef77712-c2a6-404a-9669-9191e154c7a8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d35deb79-f6b8-4d7c-87bc-b80abb13cb21",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
