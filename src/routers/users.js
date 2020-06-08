@@ -21,12 +21,11 @@ router.post("/users/login", async (req, res) => {
 });
 
 // Logout user
-// started on loging out users
 router.post("/users/logout", auth, async (req, res) => {
   try {
     const filteredTokens = req.user.tokens.filter((oldToken) => {
       console.log("old", oldToken.token, "origin", req.token);
-      return oldToken !== req.token;
+      return oldToken.token !== req.token;
     });
     console.log(filteredTokens, req.token);
     req.user.tokens = filteredTokens;
@@ -34,6 +33,18 @@ router.post("/users/logout", auth, async (req, res) => {
 
     res.status(200).send(req.user);
   } catch (error) {}
+});
+
+// logout all user sessions
+router.post("/users/logout/all", auth, async (req, res) => {
+  req.user.tokens = [];
+
+  try {
+    await req.user.save();
+    res.status(200).send("User logged out from all sessions");
+  } catch (error) {
+    res.status(500).send({ error: "unable to log out user" });
+  }
 });
 
 // Create user
