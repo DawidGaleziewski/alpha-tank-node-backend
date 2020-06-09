@@ -31,7 +31,7 @@ router.get("/tests/:id", auth, async (req, res) => {
   }
 });
 
-// Get all tests for this particular user
+// Read all tests for this particular user
 router.get("/tests", auth, async (req, res) => {
   try {
     const tests = await Test.find({ owner: req.user._id });
@@ -45,6 +45,53 @@ router.get("/tests", auth, async (req, res) => {
   }
 });
 
-// Get all tests for particular tank
+// Updaste a test
+router.patch("/tests/:id", auth, async (req, res) => {
+  const allowedUpdates = ["dateOfTest", "ph", "nh4", "nh3", "no3", "tempCelc"];
+  const updatesKeys = Object.keys(req.body);
+  const isUpdateValid = updatesKeys.every((updateKey) => {
+    return allowedUpdates.includes(updateKey);
+  });
+
+  if (!isUpdateValid) {
+    return res
+      .status(400)
+      .send({ error: "Unable to update test - data not allowed" });
+  }
+  try {
+    const test = await Test.findOne({
+      owner: req.user._id,
+      _id: req.params.id,
+    });
+    if (!test) {
+      return res.status(400).send({ error: "test not found" });
+    }
+
+    updatesKeys.forEach((updateKey) => {
+      test[updateKey] = req.body[updateKey];
+    });
+
+    await test.save();
+    res.status(200).send(test);
+  } catch (error) {}
+});
+
+// Delete a test
+router.delete("/tests/:id", auth, async (req, res) => {
+  try {
+    const test = await Test.findOne({
+      owner: req.user._id,
+      _id: req.params.id,
+    });
+    if (!test) {
+      return res.status(400).send({ error: "no such test found" });
+    }
+
+    await test.remove();
+    res.status(200).send(test);
+  } catch (error) {
+    res.status(500).send({ error: "something went wrong deleting the task" });
+  }
+});
 
 module.exports = router;
