@@ -27,4 +27,6 @@ coverage
 benchmarks/graphs
 
 .vscode
-/secure
+
+# Secure information
+**/config/**/*.js
