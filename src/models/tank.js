@@ -92,7 +92,7 @@ const tankSchema = new mongoose.Schema({
 });
 
 tankSchema.virtual("tests", {
-  ref: "Tank",
+  ref: "Test",
   localField: "_id",
   foreignField: "tankID",
 });
