@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Test = require("../models/test");
 
 const tankSchema = new mongoose.Schema({
   owner: {
@@ -88,6 +89,18 @@ const tankSchema = new mongoose.Schema({
   aquariumType: {
     type: String,
   },
+});
+
+tankSchema.virtual("tests", {
+  ref: "Tank",
+  localField: "_id",
+  foreignField: "tankID",
+});
+
+tankSchema.pre("remove", async function (next) {
+  const tank = this;
+  await Test.deleteMany({ owner: tank.owner, tankID: tank._id });
+  next();
 });
 
 const Tank = new mongoose.model("Tank", tankSchema);

@@ -63,8 +63,8 @@ router.get("/users/me", auth, async (req, res) => {
 });
 
 // Update user
-router.patch("/users/:id", async (req, res) => {
-  const _id = req.params.id;
+router.patch("/users/me", auth, async (req, res) => {
+  // const _id = req.params.id;
   const updateKeys = Object.keys(req.body);
   const allowedUpdates = ["email", "password", "name", "surname", "age"];
   const isUpdateValid = updateKeys.every((update) => {
@@ -76,7 +76,7 @@ router.patch("/users/:id", async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ _id });
+    const user = await User.findOne({ _id: req.user._id });
     updateKeys.forEach((updateKay) => {
       user[updateKay] = req.body[updateKay];
     });
@@ -88,15 +88,16 @@ router.patch("/users/:id", async (req, res) => {
 });
 
 // Delete user
-router.delete("/users/:id", async (req, res) => {
-  const _id = req.params.id;
+router.delete("/users/me", auth, async (req, res) => {
+  // const _id = req.params.id;
 
   try {
-    const user = await User.findByIdAndDelete({ _id });
+    const user = await User.findOne({ _id: req.user._id });
     if (!user) {
       return res.status(400).send({ error: "Unable to find data" });
     }
 
+    await user.remove();
     res.status(200).send(user);
   } catch (error) {
     res.status(500).send(error);

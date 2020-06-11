@@ -1,6 +1,8 @@
 const moongose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Tank = require("../models/tank");
+const Test = require("../models/test");
 
 const userSchema = new moongose.Schema({
   email: {
@@ -37,6 +39,18 @@ const userSchema = new moongose.Schema({
   ],
 });
 
+userSchema.virtual("tanks", {
+  ref: "Tank",
+  localField: "_id",
+  foreignField: "owner",
+});
+
+userSchema.virtual("tests", {
+  ref: "Test",
+  localField: "_id",
+  foreignField: "owner",
+});
+
 // Plugins
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
@@ -70,6 +84,13 @@ userSchema.pre("save", async function (next) {
     user.password = await bcrypt.hash(user.password, 8);
   }
 
+  next();
+});
+
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await Tank.deleteMany({ owner: user._id });
+  await Test.deleteMany({ owner: user._id });
   next();
 });
 
