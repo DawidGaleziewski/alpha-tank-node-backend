@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 const Tank = require("../models/tank");
 const Test = require("../models/test");
 
+const {
+  secrets: { jwtSecret },
+} = require("../config/secureKeys");
+
 const userSchema = new moongose.Schema({
   email: {
     type: String,
@@ -78,9 +82,8 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateToken = async function () {
   const user = this;
-  const secret = "you_are_breathtaking";
 
-  const token = jwt.sign({ _id: user._id.toString() }, secret);
+  const token = jwt.sign({ _id: user._id.toString() }, jwtSecret);
 
   user.tokens = user.tokens.concat({ token });
   await user.save();
